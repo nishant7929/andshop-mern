@@ -46,8 +46,6 @@ exports.createProduct = async (req, res) => {
 		};
 		const product = await productService.create(productData);
 		res.status(201).json(product);
-
-		stream.end(productImage.data);
 	} catch (err) {
 		res.status(400).json({ message: err.message });
 	}
@@ -75,10 +73,10 @@ exports.updateProduct = async (req, res) => {
 			);
 			updatedData.imageUrl = imageUrl;
 
-			const oldImageName = oldImageUrl.split("/").pop();
+			// const oldImageName = oldImageUrl.split("/").pop();
 
-			const oldImageFile = bucket.file(oldImageName);
-			await oldImageFile.delete();
+			// const oldImageFile = bucket.file(oldImageName);
+			// await oldImageFile.delete();
 		}
 		await productRef.update(updatedData);
 		const updatedProduct = await productRef.get();
