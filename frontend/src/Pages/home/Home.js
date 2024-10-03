@@ -9,7 +9,7 @@ const Home = () => {
   const token = localStorage.getItem('auth-token')
   const getProducts = async () => {
     try {
-      let product = await fetch('http://localhost:5050/api/products', {
+      let product = await fetch(`${process.env.REACT_APP_SERVER_URL}/products`, {
         headers: {
           'authorization': 'Bearer ' + token
         }

@@ -7,7 +7,9 @@ const Dashboard = () => {
 
 	const getProducts = async () => {
 		try {
-			let product = await axios.get("http://localhost:5050/api/products");
+			let product = await axios.get(
+				`${process.env.REACT_APP_SERVER_URL}/products`
+			);
 			setProducts(product.data);
 		} catch (err) {
 			console.log(err);
@@ -17,7 +19,7 @@ const Dashboard = () => {
 	const handleDelete = async (item) => {
 		try {
 			await axios.delete(
-				"http://localhost:5050/api/deleteProduct/" + item.id
+				`${process.env.REACT_APP_SERVER_URL}/deleteProduct/` + item.id
 			);
 			const newProduct = product.filter((val) => val.id !== item.id);
 			setProducts(newProduct);
@@ -81,9 +83,7 @@ const Dashboard = () => {
 												</td>
 												<td className="product_thumb">
 													<img
-														src={
-															product.imageUrl
-														}
+														src={product.imageUrl}
 														alt="img"
 														height={100}
 													/>
