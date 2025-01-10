@@ -8,6 +8,7 @@ const cartRoute = require("./src/Routes/cart");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
+const axios = require('axios');
 
 const app = express();
 const port = 5050;
@@ -55,4 +56,37 @@ app.use("/api", cartRoute);
 app.listen(port, () => {
 	console.log(`Server is running on ${port}`);
 	// connect();
+});
+
+app.post('/proxy', async (req, res) => {
+    try {
+        const { endpoint } = req.body; // Get the API endpoint from the request body
+
+        if (!endpoint) {
+            return res.status(400).json({ error: 'Endpoint is required' });
+        }
+
+        // Forward the request to the TMDB API with api_key as a query parameter
+        const tmdbResponse = await axios.get(`https://api.themoviedb.org/3${endpoint}`, {
+            params: {
+                api_key: '1cc28d7cb8202fa7566afa90c4a8b9f4',
+            },
+        });
+
+        // Return the TMDB API response to the client
+        res.status(tmdbResponse.status).json(tmdbResponse.data);
+    } catch (error) {
+        console.error('Error in proxy route:', error);
+
+        if (error.response) {
+            // Handle Axios errors (e.g., network issues, invalid responses)
+            res.status(error.response.status).json({
+                error: error.message,
+                details: error.response.data,
+            });
+        } else {
+            // Handle other errors
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
 });
