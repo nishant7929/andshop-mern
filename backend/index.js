@@ -58,17 +58,19 @@ app.listen(port, () => {
 	// connect();
 });
 
-app.post('/api/moviedb', async (req, res) => {
+app.get('/api/moviedb/*', async (req, res) => {
     try {
-        const { endpoint } = req.body;
-
+        const endpoint = req.params[0];
+        const queryParams = req.query;
+		console.log({ endpoint, queryParams });
         if (!endpoint) {
             return res.status(400).json({ error: 'Endpoint is required' });
         }
 
-        const tmdbResponse = await axios.get(`https://api.themoviedb.org/3${endpoint}`, {
+        const tmdbResponse = await axios.get(`https://api.themoviedb.org/3/${endpoint}`, {
             params: {
                 api_key: process.env.TMDB_API_KEY,
+                ...queryParams,
             },
         });
 
