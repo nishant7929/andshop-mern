@@ -86,3 +86,41 @@ app.get('/api/moviedb/*', async (req, res) => {
         }
     }
 });
+
+
+app.get('/moviedb-img/*', async (req, res) => {
+    try {
+		const endpoint = req.params[0];
+
+        if (!imagePath) {
+            return res.status(400).json({ error: 'Image path is required' });
+        }
+
+        // Construct the full URL to the image
+        const imageUrl = `https://image.tmdb.org/t/p${endpoint}`;
+
+        // Fetch the image from TMDB
+        const imageResponse = await axios.get(imageUrl, {
+            responseType: 'stream', // Stream the image data
+        });
+
+        // Set the appropriate content type header
+        res.set('Content-Type', imageResponse.headers['content-type']);
+
+        // Stream the image data to the client
+        imageResponse.data.pipe(res);
+    } catch (error) {
+        console.error('Error in image proxy route:', error);
+
+        if (error.response) {
+            // Handle Axios errors (e.g., network issues, invalid responses)
+            res.status(error.response.status).json({
+                error: error.message,
+                details: error.response.data,
+            });
+        } else {
+            // Handle other errors
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+});
