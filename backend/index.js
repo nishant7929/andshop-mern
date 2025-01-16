@@ -62,7 +62,6 @@ app.get('/api/moviedb/*', async (req, res) => {
     try {
         const endpoint = req.params[0];
         const queryParams = req.query;
-		console.log({ endpoint, queryParams });
         if (!endpoint) {
             return res.status(400).json({ error: 'Endpoint is required' });
         }
@@ -86,7 +85,6 @@ app.get('/api/moviedb/*', async (req, res) => {
         }
     }
 });
-
 
 app.get('/moviedb-img/*', async (req, res) => {
     try {
